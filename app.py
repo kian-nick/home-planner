@@ -1,7 +1,8 @@
-import streamlit as st
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import json
 
-# Function to load data
+app = Flask(__name__)
+
 def load_data():
     try:
         with open('data.json', 'r') as f:
@@ -9,60 +10,42 @@ def load_data():
     except FileNotFoundError:
         return {"idea_boards": []}
 
-# Function to save data
 def save_data(data):
     with open('data.json', 'w') as f:
         json.dump(data, f)
 
-# Main app
-def main():
-    st.title("Home Planning Helper")
+@app.route('/')
+def home():
+    return render_template('home.html')
 
-    # Load data
+@app.route('/idea_boards', methods=['GET', 'POST'])
+def idea_boards():
     data = load_data()
-
-    # Sidebar for navigation
-    page = st.sidebar.radio("Go to", ["Idea Boards", "Room Planner", "Budget Calculator"])
-
-    if page == "Idea Boards":
-        idea_boards(data)
-    elif page == "Room Planner":
-        room_planner()
-    elif page == "Budget Calculator":
-        budget_calculator()
-
-    # Save data after any changes
-    save_data(data)
-
-# Idea Boards page
-def idea_boards(data):
-    st.header("Idea Boards")
-
-    # Create new board
-    with st.form("new_board"):
-        title = st.text_input("Board Title")
-        description = st.text_area("Board Description")
-        if st.form_submit_button("Create Board"):
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        if title and description:
             data['idea_boards'].append({"title": title, "description": description})
-            st.success(f"Board '{title}' created!")
+            save_data(data)
+        return redirect(url_for('idea_boards'))
+    return render_template('idea_boards.html', boards=data['idea_boards'])
 
-    # Display existing boards
-    for i, board in enumerate(data['idea_boards']):
-        st.subheader(board['title'])
-        st.write(board['description'])
-        if st.button(f"Delete Board {i}"):
-            data['idea_boards'].pop(i)
-            st.experimental_rerun()
+@app.route('/delete_board/<int:index>')
+def delete_board(index):
+    data = load_data()
+    if 0 <= index < len(data['idea_boards']):
+        data['idea_boards'].pop(index)
+        save_data(data)
+    return redirect(url_for('idea_boards'))
 
-# Room Planner page (placeholder)
-def room_planner():
-    st.header("Room Planner")
-    st.write("Room planner feature coming soon!")
+# ... other routes ...
+@app.route('/room_planners')
+def room_planners():
+    return render_template('room_planners.html')
 
-# Budget Calculator page (placeholder)
+@app.route('/budget_calculator')
 def budget_calculator():
-    st.header("Budget Calculator")
-    st.write("Budget calculator feature coming soon!")
+    return render_template('budget_calculator.html')
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=True)

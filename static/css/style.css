@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem;
+}
+
+nav a {
+  color: #fff;
+  margin-right: 10px;
+}
+
+main {
+  padding: 2rem;
+}
+
+.board {
+  background: #f4f4f4;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+form {
+  margin-bottom: 2rem;
+}
+
+input, textarea, button {
+  display: block;
+  margin-bottom: 10px;
+}

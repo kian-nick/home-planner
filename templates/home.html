@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Welcome to Kian's Home Planner</h2>
+    <p>Use the navigation menu to explore different features:</p>
+    <ul>
+        <li><a href="{{ url_for('idea_boards') }}">Idea Boards</a></li>
+        <li><a href="{{ url_for('room_planners') }}">Room Planners</a></li>
+        <li><a href="{{ url_for('budget_calculator') }}">Budget Calculator</a></li>
+    </ul>
+{% endblock %}
